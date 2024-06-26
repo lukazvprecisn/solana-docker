@@ -17,7 +17,7 @@ ENV PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
 COPY "./.cache/solana-release-${SOLANA_VERSION}-x86_64-unknown-linux-gnu" "/root/.local/share/solana/install/releases/${SOLANA_VERSION}"
 COPY "./.cache/solana-bpf-tools-${PLATFORM_TOOLS_VERSION}-linux" "/root/.cache/solana/v${PLATFORM_TOOLS_VERSION}/bpf-tools"
 COPY "./.cache/criterion-${CRITERION_VERSION}-linux-x86_64/criterion-v${CRITERION_VERSION}" "/root/.cache/solana/v${CRITERION_VERSION}/criterion"
-COPY --chmod=755 "./.cache/anchor-cli-${ANCHOR_VERSION}/package/anchor" "/root/.cargo/bin/anchor"
+COPY --chmod=755 "./.cache/anchor-cli-${ANCHOR_VERSION}/package/anchor" "/usr/local/cargo/bin/anchor"
 COPY --chmod=755 "./entrypoint.sh" "/root/"
 
 # Wire up all component
