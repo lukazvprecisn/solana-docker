@@ -1,5 +1,6 @@
 #!/usr/bin/sh
 
+ANCHOR_VERSION="0.26.0"
 CRITERION_VERSION="2.3.3"
 PLATFORM_TOOLS_VERSION="1.29"
 SOLANA_VERSION="1.14.15"
@@ -45,5 +46,14 @@ else
 	tar -xvf "$WORKING_DIR/.cache/criterion-$CRITERION_VERSION-linux-x86_64.tar.bz2" -C "$WORKING_DIR/.cache/criterion-$CRITERION_VERSION-linux-x86_64"
 fi
 
+echo "Downloading Anchor v$ANCHOR_VERSION"
+if [ -d "$WORKING_DIR/.cache/anchor-cli-$ANCHOR_VERSION" ]; then
+	echo "Dir anchor-cli-$ANCHOR_VERSION is already existed. Skip downloading."
+else
+	curl -fSL "https://registry.npmjs.org/@coral-xyz/anchor-cli/-/anchor-cli-$ANCHOR_VERSION.tgz" -o "$WORKING_DIR/.cache/anchor-cli-$ANCHOR_VERSION.tgz"
+	mkdir -p "$WORKING_DIR/.cache/anchor-cli-$ANCHOR_VERSION"
+	tar -xvf "$WORKING_DIR/.cache/anchor-cli-$ANCHOR_VERSION.tgz" -C "$WORKING_DIR/.cache/anchor-cli-$ANCHOR_VERSION"
+fi
+
 cd "$WORKING_DIR"
-docker build --build-arg "CRITERION_VERSION"="$CRITERION_VERSION" --build-arg "PLATFORM_TOOLS_VERSION"="$PLATFORM_TOOLS_VERSION" --build-arg "SOLANA_VERSION=$SOLANA_VERSION" -t solana-v1.14 .
+docker build --build-arg "ANCHOR_VERSION"="$ANCHOR_VERSION" --build-arg "CRITERION_VERSION"="$CRITERION_VERSION" --build-arg "PLATFORM_TOOLS_VERSION"="$PLATFORM_TOOLS_VERSION" --build-arg "SOLANA_VERSION=$SOLANA_VERSION" -t solana-v1.14 .
