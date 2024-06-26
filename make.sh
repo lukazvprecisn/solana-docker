@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 ANCHOR_VERSION="0.26.0"
 CRITERION_VERSION="2.3.3"
