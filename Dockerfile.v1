@@ -1,4 +1,4 @@
-ARG RUST_IMAGE_TAG=slim-bookworm
+ARG RUST_IMAGE_TAG=slim-bullseye
 
 # First set base image to Rust built on Debian-based distro
 FROM rust:${RUST_IMAGE_TAG}

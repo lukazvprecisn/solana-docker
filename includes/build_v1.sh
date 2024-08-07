@@ -1,10 +1,5 @@
 #!/bin/sh
 
-ANCHOR_VERSION="0.26.0"
-CRITERION_VERSION="2.3.3"
-PLATFORM_TOOLS_VERSION="1.29"
-RUST_IMAGE_TAG="1.64-slim-bullseye"
-SOLANA_VERSION="1.14.15"
 WORKING_DIR="$(pwd)"
 
 if [ ! -d "${WORKING_DIR}/.cache" ]; then
@@ -57,4 +52,4 @@ else
 fi
 
 cd "${WORKING_DIR}"
-docker build --build-arg "RUST_IMAGE_TAG"="${RUST_IMAGE_TAG}" --build-arg "ANCHOR_VERSION"="${ANCHOR_VERSION}" --build-arg "CRITERION_VERSION"="${CRITERION_VERSION}" --build-arg "PLATFORM_TOOLS_VERSION"="${PLATFORM_TOOLS_VERSION}" --build-arg "SOLANA_VERSION=${SOLANA_VERSION}" -t "solana-build:${SOLANA_VERSION}" .
+docker build --file Dockerfile.v1 --build-arg "RUST_IMAGE_TAG"="${RUST_IMAGE_TAG}" --build-arg "ANCHOR_VERSION"="${ANCHOR_VERSION}" --build-arg "CRITERION_VERSION"="${CRITERION_VERSION}" --build-arg "PLATFORM_TOOLS_VERSION"="${PLATFORM_TOOLS_VERSION}" --build-arg "SOLANA_VERSION=${SOLANA_VERSION}" -t "solana-build:${SOLANA_VERSION}-a${ANCHOR_VERSION}" .
