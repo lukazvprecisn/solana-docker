@@ -1,5 +1,7 @@
+ARG RUST_IMAGE_TAG=slim-bookworm
+
 # First set base image to Rust built on Debian-based distro
-FROM rust:1.64-slim-bullseye
+FROM rust:${RUST_IMAGE_TAG}
 
 # Declare arugments
 ARG ANCHOR_VERSION
