@@ -1,6 +1,6 @@
 # Solana Docker
 
-Docker Images for isolation build environment when working Solana contracts.
+Docker Images for isolation build environment when compiling Solana smart contracts.
 
 Only latest version of each minor version is predefined for convenient.
 
@@ -80,3 +80,7 @@ Try to look for version of criterion, bpf-tools, sbf-tools, platform-tools on th
 
 - https://github.com/solana-labs/solana/blob/v1.14.27/sdk/bpf/scripts/install.sh
 - https://github.com/solana-labs/solana/blob/v1.14.27/sdk/sbf/scripts/install.sh
+
+## License
+
+This project is licensed under MIT license. See LICENSE file for more details.

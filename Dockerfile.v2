@@ -1,3 +1,6 @@
+# MIT License
+# Copyright (C) 2024 Lukaz v Precision
+
 ARG RUST_IMAGE_TAG=slim-bullseye
 
 # First set base image to Rust built on Debian-based distro
