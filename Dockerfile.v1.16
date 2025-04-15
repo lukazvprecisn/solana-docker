@@ -1,5 +1,5 @@
 # MIT License
-# Copyright (C) 2024 Lukaz v Precision
+# Copyright (C) 2025 Lukaz v Precision
 
 ARG RUST_IMAGE_TAG=slim-bookworm
 
