@@ -1,0 +1,54 @@
+# MIT License
+# Copyright (C) 2025 Lukaz v Precision
+
+# Prepare build image
+FROM rust:1.81-slim-bookworm AS build
+RUN apt-get update; apt-get install -y build-essential bzip2 libssl-dev libudev-dev wget;
+
+ARG ANCHOR_VERSION=0.31.1
+ARG CRITERION_VERSION=2.3.3
+ARG PLATFORM_TOOLS_VERSION=1.43
+ARG SOLANA_VERSION=2.1.21
+
+# Download Solana
+RUN wget https://github.com/anza-xyz/agave/releases/download/v${SOLANA_VERSION}/solana-release-x86_64-unknown-linux-gnu.tar.bz2 -O /tmp/solana.tar.bz2
+RUN mkdir /tmp/solana; tar -x -v -f /tmp/solana.tar.bz2 -C /tmp/solana
+# Download Platform Tools
+RUN wget https://github.com/anza-xyz/platform-tools/releases/download/v${PLATFORM_TOOLS_VERSION}/platform-tools-linux-x86_64.tar.bz2 -O /tmp/platform-tools.tar.bz2
+RUN mkdir /tmp/platform-tools; tar -x -v -f /tmp/platform-tools.tar.bz2 -C /tmp/platform-tools
+# Download Criterion
+RUN wget https://github.com/Snaipe/Criterion/releases/download/v${CRITERION_VERSION}/criterion-v${CRITERION_VERSION}-linux-x86_64.tar.bz2 -O /tmp/criterion.tar.bz2
+RUN mkdir /tmp/criterion; tar -x -v -f /tmp/criterion.tar.bz2 -C /tmp/criterion
+# Build Anchor
+RUN cargo install --git https://github.com/coral-xyz/anchor --tag v${ANCHOR_VERSION} anchor-cli --locked
+
+# Set base image to Rust built on Debian-based distro
+FROM rust:1.81-slim-bookworm
+
+ARG CRITERION_VERSION=2.3.3
+ARG PLATFORM_TOOLS_VERSION=1.43
+ARG SOLANA_VERSION=2.1.21
+
+# Set working directory
+WORKDIR /code
+
+# Predefine environment variables
+ENV PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
+
+# Install Solana binaries
+COPY --from=build "/tmp/solana" "/root/.local/share/solana/install/releases/${SOLANA_VERSION}"
+COPY --from=build "/tmp/platform-tools" "/root/.cache/solana/v${PLATFORM_TOOLS_VERSION}/platform-tools"
+COPY --from=build "/tmp/criterion" "/root/.cache/solana/v${CRITERION_VERSION}/criterion"
+COPY --from=build --chmod=755 "/usr/local/cargo/bin/anchor" "/usr/local/cargo/bin/anchor"
+COPY --chmod=755 "./entrypoint_sbf.sh" "/root/entrypoint.sh"
+
+# Wire up all component
+RUN mkdir "/root/.local/share/solana/install/releases/${SOLANA_VERSION}/solana-release/bin/sdk/sbf/dependencies";\
+  ln -s "/root/.local/share/solana/install/releases/${SOLANA_VERSION}/solana-release" "/root/.local/share/solana/install/active_release";\
+  ln -s "/root/.cache/solana/v${PLATFORM_TOOLS_VERSION}/platform-tools" "/root/.local/share/solana/install/releases/${SOLANA_VERSION}/solana-release/bin/sdk/sbf/dependencies/platform-tools";\
+  ln -s "/root/.cache/solana/v${CRITERION_VERSION}/criterion" "/root/.local/share/solana/install/releases/${SOLANA_VERSION}/solana-release/bin/sdk/sbf/dependencies/criterion";\
+  touch "/root/.local/share/solana/install/releases/${SOLANA_VERSION}/solana-release/bin/sdk/sbf/dependencies/platform-tools-v${PLATFORM_TOOLS_VERSION}.md";\
+  touch "/root/.local/share/solana/install/releases/${SOLANA_VERSION}/solana-release/bin/sdk/sbf/dependencies/criterion-v${CRITERION_VERSION}.md";
+
+# Execute build process
+ENTRYPOINT ["/root/entrypoint.sh"]
